@@ -1,6 +1,6 @@
 namespace InventoryManagement.Models.DTOs;
 
-public class InventoryDto
+public class InventoryDTO
 {
     public int WarehousesId { get; set; }
     public string ProductsSku { get; set; }

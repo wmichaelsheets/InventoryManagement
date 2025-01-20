@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using BiancasBikes.Data;
+using InventoryManagement.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.Cookie.Name = "BiancasBikesLoginCookie";
+        options.Cookie.Name = "InventoryManagementLoginCookie";
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.Cookie.HttpOnly = true; //The cookie cannot be accessed through JS (protects against XSS)
         options.Cookie.MaxAge = new TimeSpan(7, 0, 0, 0); // cookie expires in a week regardless of activity
@@ -47,13 +47,13 @@ builder.Services.AddIdentityCore<IdentityUser>(config =>
                 config.User.RequireUniqueEmail = true;
             })
     .AddRoles<IdentityRole>()  //add the role service.  
-    .AddEntityFrameworkStores<BiancasBikesDbContext>();
+    .AddEntityFrameworkStores<InventoryManagementDbContext>();
 
 // allows passing datetimes without time zone data 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // allows our api endpoints to access the database through Entity Framework Core
-builder.Services.AddNpgsql<BiancasBikesDbContext>(builder.Configuration["BiancasBikesDbConnectionString"]);
+builder.Services.AddNpgsql<InventoryManagementDbContext>(builder.Configuration["InventoryManagementDbConnectionString"]);
 
 
 var app = builder.Build();

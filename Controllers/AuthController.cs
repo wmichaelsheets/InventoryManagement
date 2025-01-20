@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text;
-using BiancasBikes.Models;
-using BiancasBikes.Models.DTOs;
-using BiancasBikes.Data;
+using InventoryManagement.Data;
+using InventoryManagement.Models;
+using InventoryManagement.Models.DTOs;
 
-namespace BiancasBikes.Controllers;
+namespace InventoryManagement.Controllers;
 
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private BiancasBikesDbContext _dbContext;
+    private InventoryManagementDbContext _dbContext;
     private UserManager<IdentityUser> _userManager;
 
-    public AuthController(BiancasBikesDbContext context, UserManager<IdentityUser> userManager)
+    public AuthController(InventoryManagementDbContext context, UserManager<IdentityUser> userManager)
     {
         _dbContext = context;
         _userManager = userManager;
@@ -107,11 +107,9 @@ public class AuthController : ControllerBase
                 Id = profile.Id,
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
-                Address = profile.Address,
                 IdentityUserId = identityUserId,
-                UserName = User.FindFirstValue(ClaimTypes.Name),
-                Email = User.FindFirstValue(ClaimTypes.Email),
-                Roles = roles
+                Username = User.FindFirstValue(ClaimTypes.Name),
+                Email = User.FindFirstValue(ClaimTypes.Email)
             };
 
             return Ok(userDto);
@@ -139,7 +137,6 @@ public class AuthController : ControllerBase
             {
                 FirstName = registration.FirstName,
                 LastName = registration.LastName,
-                Address = registration.Address,
                 IdentityUserId = user.Id,
             });
             _dbContext.SaveChanges();
