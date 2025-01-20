@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using BiancasBikes.Models;
+using InventoryManagement.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace BiancasBikes.Data;
-public class BiancasBikesDbContext : IdentityDbContext<IdentityUser>
+namespace InventoryManagement.Data;
+public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
 {
     private readonly IConfiguration _configuration;
     public DbSet<UserProfile> UserProfiles { get; set; }
 
-    public BiancasBikesDbContext(DbContextOptions<BiancasBikesDbContext> context, IConfiguration config) : base(context)
+    public InventoryManagementDbContext(DbContextOptions<InventoryManagementDbContext> context, IConfiguration config) : base(context)
     {
         _configuration = config;
     }

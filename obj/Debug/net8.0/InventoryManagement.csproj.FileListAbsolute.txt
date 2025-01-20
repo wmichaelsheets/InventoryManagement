@@ -1,0 +1,8 @@
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.csproj.AssemblyReference.cache
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.AssemblyInfoInputs.cache
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.AssemblyInfo.cs
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.csproj.CoreCompileInputs.cache
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Valued Customer\workspace\csharp\InventoryManagement\InventoryManagement\obj\Debug\net8.0\InventoryManagement.sourcelink.json
