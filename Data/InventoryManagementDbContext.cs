@@ -7,7 +7,10 @@ namespace InventoryManagement.Data;
 public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
 {
     private readonly IConfiguration _configuration;
+    public DbSet<Product> Products { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<Inventory> Inventories { get; set; }
 
     public InventoryManagementDbContext(DbContextOptions<InventoryManagementDbContext> context, IConfiguration config) : base(context)
     {
@@ -44,7 +47,7 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
             IdentityUserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
             FirstName = "Admina",
             LastName = "Strator",
-            Address = "101 Main Street",
+
         });
 
 
