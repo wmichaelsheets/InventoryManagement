@@ -47,6 +47,8 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
             IdentityUserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
             FirstName = "Admina",
             LastName = "Strator",
+            Username = "Administrator",
+            Email = "admina@strator.comx",
 
         });
 
@@ -77,37 +79,7 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
             },
                 });
 
-        modelBuilder.Entity<UserProfile>().HasData(new UserProfile[]
-                {
 
-    new UserProfile
-    {
-        Id = 2,
-        FirstName = "John",
-        LastName = "Doe",
-        Username = "JDoe",
-        IdentityUserId = Guid.NewGuid().ToString(),
-        Email = "john.doe@example.com",
-    },
-    new UserProfile
-    {
-        Id = 3,
-        FirstName = "Jane",
-        LastName = "Smith",
-        Username = "JSmith",
-        IdentityUserId = Guid.NewGuid().ToString(),
-        Email = "jane.smith@example.com",
-    },
-    new UserProfile
-    {
-        Id = 4,
-        FirstName = "Peter",
-        LastName = "Jones",
-        Username = "PJones",
-        IdentityUserId = Guid.NewGuid().ToString(),
-        Email = "peter.jones@example.com",
-    },
-                });
 
         modelBuilder.Entity<Products>()
                .HasKey(p => p.Sku);
@@ -121,7 +93,7 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
     Sku = "PROD-001",
     ProductName = "Product Alpha",
     UnitPrice = 19.99M,
-    UserProfileId = 2,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 5, 15, 10, 30, 0),
     Notes = "High quality item",
 },
@@ -131,7 +103,7 @@ new Products
     Sku = "PROD-002",
     ProductName = "Product Beta",
     UnitPrice = 29.99M,
-    UserProfileId = 3,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 8, 22, 14, 45, 0),
     Notes = "Popular choice",
 },
@@ -141,7 +113,7 @@ new Products
     Sku = "PROD-003",
     ProductName = "Product Gamma",
     UnitPrice = 9.99M,
-    UserProfileId = 4,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 3, 10, 9, 15, 0),
     Notes = "",
 },
@@ -151,7 +123,7 @@ new Products
     Sku = "PROD-004",
     ProductName = "Product Delta",
     UnitPrice = 49.99M,
-    UserProfileId = 2,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 11, 5, 16, 20, 0),
     Notes = "Limited edition",
 },
@@ -161,7 +133,7 @@ new Products
     Sku = "PROD-005",
     ProductName = "Product Epsilon",
     UnitPrice = 14.99M,
-    UserProfileId = 3,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 7, 18, 12, 0, 0),
     Notes = "",
 },
@@ -171,7 +143,7 @@ new Products
     Sku = "PROD-006",
     ProductName = "Product Zeta",
     UnitPrice = 39.99M,
-    UserProfileId = 4,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 9, 30, 8, 0, 0),
     Notes = "New arrival",
 },
@@ -181,7 +153,7 @@ new Products
     Sku = "PROD-007",
     ProductName = "Product Eta",
     UnitPrice = 7.99M,
-    UserProfileId = 2,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 2, 14, 18, 45, 0),
     Notes = "",
 },
@@ -191,7 +163,7 @@ new Products
     Sku = "PROD-008",
     ProductName = "Product Theta",
     UnitPrice = 59.99M,
-    UserProfileId = 3,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 12, 25, 0, 0, 0),
     Notes = "Premium product",
 },
@@ -201,7 +173,7 @@ new Products
     Sku = "PROD-009",
     ProductName = "Product Iota",
     UnitPrice = 12.99M,
-    UserProfileId = 4,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 6, 1, 7, 30, 0),
     Notes = "",
 },
@@ -211,7 +183,7 @@ new Products
     Sku = "PROD-010",
     ProductName = "Product Kappa",
     UnitPrice = 24.99M,
-    UserProfileId = 2,
+    UserProfileId = 1,
     Updated = new DateTime(2024, 4, 20, 11, 10, 0),
     Notes = "",
 },
