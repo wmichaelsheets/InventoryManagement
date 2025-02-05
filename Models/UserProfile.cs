@@ -13,5 +13,5 @@ public class UserProfile
     public required string Email { get; set; }
     public required string IdentityUserId { get; set; }
     public IdentityUser IdentityUser { get; set; }
-    public ICollection<Products> Products { get; set; } = new List<Products>();
+    public ICollection<Product> Products { get; set; } = new List<Product>();
 }

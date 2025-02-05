@@ -2,7 +2,7 @@ namespace InventoryManagement.Models.DTOs;
 
 public class InventoryDTO
 {
-    public int WarehousesId { get; set; }
-    public string ProductsSku { get; set; }
+    public int WarehouseId { get; set; }
+    public string ProductSku { get; set; }
     public int Quantity { get; set; }
 }

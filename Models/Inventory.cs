@@ -10,10 +10,10 @@ public class Inventory
 
     [Key]
     [Column(Order = 1)]
-    public string ProductsSku { get; set; }
+    public string ProductSku { get; set; }
 
     public int Quantity { get; set; }
 
     public Warehouse Warehouse { get; set; }
-    public Products Product { get; set; }
+    public Product Product { get; set; }
 }

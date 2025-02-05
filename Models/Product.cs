@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryManagement.Models;
 
-public class Products
+public class Product
 {
     [Key]
     public required string Sku { get; set; }

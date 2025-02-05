@@ -7,7 +7,7 @@ namespace InventoryManagement.Data;
 public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
 {
     private readonly IConfiguration _configuration;
-    public DbSet<Products> Products { get; set; }
+    public DbSet<Product> Products { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<Inventory> Inventories { get; set; }
@@ -81,14 +81,14 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
 
 
 
-        modelBuilder.Entity<Products>()
+        modelBuilder.Entity<Product>()
                .HasKey(p => p.Sku);
 
         modelBuilder.Entity<Inventory>()
-            .HasKey(i => new { i.WarehouseId, i.ProductsSku });
-        modelBuilder.Entity<Products>().HasData(new Products[]
+            .HasKey(i => new { i.WarehouseId, i.ProductSku });
+        modelBuilder.Entity<Product>().HasData(new Product[]
         {
-           new Products
+           new Product
 {
     Sku = "PROD-001",
     ProductName = "Product Alpha",
@@ -98,7 +98,7 @@ public class InventoryManagementDbContext : IdentityDbContext<IdentityUser>
     Notes = "High quality item",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-002",
     ProductName = "Product Beta",
@@ -108,7 +108,7 @@ new Products
     Notes = "Popular choice",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-003",
     ProductName = "Product Gamma",
@@ -118,7 +118,7 @@ new Products
     Notes = "",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-004",
     ProductName = "Product Delta",
@@ -128,7 +128,7 @@ new Products
     Notes = "Limited edition",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-005",
     ProductName = "Product Epsilon",
@@ -138,7 +138,7 @@ new Products
     Notes = "",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-006",
     ProductName = "Product Zeta",
@@ -148,7 +148,7 @@ new Products
     Notes = "New arrival",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-007",
     ProductName = "Product Eta",
@@ -158,7 +158,7 @@ new Products
     Notes = "",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-008",
     ProductName = "Product Theta",
@@ -168,7 +168,7 @@ new Products
     Notes = "Premium product",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-009",
     ProductName = "Product Iota",
@@ -178,7 +178,7 @@ new Products
     Notes = "",
 },
 
-new Products
+new Product
 {
     Sku = "PROD-010",
     ProductName = "Product Kappa",
@@ -189,41 +189,41 @@ new Products
 },
  });
         modelBuilder.Entity<Inventory>()
-                .HasKey(i => new { i.WarehouseId, i.ProductsSku });
+                .HasKey(i => new { i.WarehouseId, i.ProductSku });
         modelBuilder.Entity<Inventory>().HasData(new Inventory[]
                {
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-001", Quantity = 100 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-002", Quantity = 150 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-003", Quantity = 200 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-004", Quantity = 75 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-005", Quantity = 125 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-006", Quantity = 80 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-007", Quantity = 175 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-008", Quantity = 60 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-009", Quantity = 90 },
-            new Inventory { WarehouseId = 1, ProductsSku = "PROD-010", Quantity = 110 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-001", Quantity = 100 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-002", Quantity = 150 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-003", Quantity = 200 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-004", Quantity = 75 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-005", Quantity = 125 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-006", Quantity = 80 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-007", Quantity = 175 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-008", Quantity = 60 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-009", Quantity = 90 },
+            new Inventory { WarehouseId = 1, ProductSku = "PROD-010", Quantity = 110 },
 
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-001", Quantity = 200 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-002", Quantity = 180 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-003", Quantity = 250 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-004", Quantity = 120 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-005", Quantity = 160 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-006", Quantity = 140 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-007", Quantity = 220 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-008", Quantity = 100 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-009", Quantity = 130 },
-            new Inventory { WarehouseId = 2, ProductsSku = "PROD-010", Quantity = 170 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-001", Quantity = 200 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-002", Quantity = 180 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-003", Quantity = 250 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-004", Quantity = 120 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-005", Quantity = 160 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-006", Quantity = 140 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-007", Quantity = 220 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-008", Quantity = 100 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-009", Quantity = 130 },
+            new Inventory { WarehouseId = 2, ProductSku = "PROD-010", Quantity = 170 },
 
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-001", Quantity = 150 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-002", Quantity = 120 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-003", Quantity = 180 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-004", Quantity = 90 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-005", Quantity = 140 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-006", Quantity = 110 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-007", Quantity = 200 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-008", Quantity = 80 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-009", Quantity = 160 },
-            new Inventory { WarehouseId = 3, ProductsSku = "PROD-010", Quantity = 130 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-001", Quantity = 150 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-002", Quantity = 120 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-003", Quantity = 180 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-004", Quantity = 90 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-005", Quantity = 140 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-006", Quantity = 110 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-007", Quantity = 200 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-008", Quantity = 80 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-009", Quantity = 160 },
+            new Inventory { WarehouseId = 3, ProductSku = "PROD-010", Quantity = 130 },
                });
 
 
