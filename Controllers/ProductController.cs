@@ -17,5 +17,34 @@ public class ProductController : ControllerBase
         _dbContext = context;
     }
 
+    [HttpGet("{productName}")]
+    public async Task<ActionResult<ProductWithInventoryDTO>> GetProductWithInventory(string productName)
+    {
+        var product = await _dbContext.Products
+            .Include(p => p.Inventories)
+            .FirstOrDefaultAsync(p => p.ProductName == productName);
 
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var productWithInventoryDTO = new ProductWithInventoryDTO
+        {
+            Sku = product.Sku,
+            ProductName = product.ProductName,
+            UnitPrice = product.UnitPrice,
+            UserId = product.UserProfileId,
+            Updated = product.Updated,
+            Notes = product.Notes,
+            Inventories = product.Inventories.Select(i => new InventoryDTO
+            {
+                WarehouseId = i.WarehouseId,
+                ProductSku = i.ProductSku,
+                Quantity = i.Quantity
+            }).ToList()
+        };
+
+        return Ok(productWithInventoryDTO);
+    }
 }
