@@ -95,4 +95,72 @@ public class InventoryController : ControllerBase
 
         return CreatedAtAction(nameof(AddInventoryItem), new { warehouseId = inventoryItem.WarehouseId, productSku = inventoryItem.ProductSku }, inventoryItem);
     }
+
+    [HttpPut("{warehouseId}")]
+    public async Task<IActionResult> UpdateInventoryItem(int warehouseId, [FromBody] UpdateInventoryItemDTO updateInventoryItemDTO)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+
+        var warehouse = await _dbContext.Warehouses.FindAsync(warehouseId);
+        if (warehouse == null)
+        {
+            return NotFound($"Warehouse with ID {warehouseId} not found.");
+        }
+
+
+        var product = await _dbContext.Products.FindAsync(updateInventoryItemDTO.ProductSku);
+        if (product == null)
+        {
+            return NotFound($"Product with SKU {updateInventoryItemDTO.ProductSku} not found.");
+        }
+
+
+        var inventoryItem = await _dbContext.Inventories
+            .FirstOrDefaultAsync(i => i.WarehouseId == warehouseId && i.ProductSku == updateInventoryItemDTO.ProductSku);
+
+        if (inventoryItem == null)
+        {
+
+            inventoryItem = new Inventory
+            {
+                WarehouseId = warehouseId,
+                ProductSku = updateInventoryItemDTO.ProductSku,
+                Quantity = updateInventoryItemDTO.Quantity
+            };
+            _dbContext.Inventories.Add(inventoryItem);
+        }
+        else
+        {
+
+            inventoryItem.Quantity = updateInventoryItemDTO.Quantity;
+        }
+
+
+        product.Updated = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+
+        var updatedInventoryItemDTO = new InventoryItemDTO
+        {
+            WarehouseId = inventoryItem.WarehouseId,
+            WarehouseName = warehouse.Name,
+            WarehouseLocation = warehouse.Location,
+            WarehouseNotes = warehouse.Notes,
+            ProductSku = inventoryItem.ProductSku,
+            ProductName = product.ProductName,
+            UnitPrice = product.UnitPrice,
+            UserId = product.UserProfileId,
+            ProductNotes = product.Notes,
+            Quantity = inventoryItem.Quantity,
+            ProductUpdated = product.Updated
+        };
+
+        return Ok(updatedInventoryItemDTO);
+    }
+
 }
