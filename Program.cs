@@ -7,6 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactAppPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -66,6 +77,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("ReactAppPolicy");
 // these two calls are required to add auth to the pipeline for a request
 app.UseAuthentication();
 app.UseAuthorization();

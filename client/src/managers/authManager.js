@@ -3,7 +3,7 @@ const _apiUrl = "/api/auth";
 export const login = (email, password) => {
   return fetch(_apiUrl + "/login", {
     method: "POST",
-    credentials: "same-origin",
+    credentials: "include", //Originally "same-origin", but now allows cookies to be sent with the request. Two other instances of this in the file.
     headers: {
       Authorization: `Basic ${btoa(`${email}:${password}`)}`,
     },
@@ -21,15 +21,29 @@ export const logout = () => {
 };
 
 export const tryGetLoggedInUser = () => {
-  return fetch(_apiUrl + "/me").then((res) => {
-    return res.status === 401 ? Promise.resolve(null) : res.json();
+  return fetch(_apiUrl + "/me", {
+    credentials: 'include'  // This ensures cookies are sent with the request
+  })
+  .then((res) => {
+    if (res.status === 401) {
+      console.log("User is not authenticated");
+      return null;
+    }
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+  .catch((error) => {
+    console.error("Error in tryGetLoggedInUser:", error);
+    throw error;
   });
 };
 
 export const register = (userProfile) => {
   userProfile.password = btoa(userProfile.password);
   return fetch(_apiUrl + "/register", {
-    credentials: "same-origin",
+    credentials: "include", // This ensures cookies are sent with the request
     method: "POST",
     headers: {
       "Content-Type": "application/json",
