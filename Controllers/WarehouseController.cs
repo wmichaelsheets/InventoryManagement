@@ -17,5 +17,66 @@ public class WarehouseController : ControllerBase
         _dbContext = context;
     }
 
+    [HttpGet("{warehouseId}/inventory")]
+    public async Task<ActionResult<IEnumerable<WarehouseInventoryDTO>>> GetWarehouseInventory(int warehouseId)
+    {
+        var warehouseInventory = await _dbContext.Inventories
+            .Where(i => i.WarehouseId == warehouseId)
+            .Join(
+                _dbContext.Products,
+                inventory => inventory.ProductSku,
+                product => product.Sku,
+                (inventory, product) => new WarehouseInventoryDTO
+                {
+                    ProductName = product.ProductName,
+                    Quantity = inventory.Quantity
+                }
+            )
+            .ToListAsync();
+
+        if (warehouseInventory == null || !warehouseInventory.Any())
+        {
+            return NotFound($"No inventory found for warehouse with ID {warehouseId}");
+        }
+
+        return Ok(warehouseInventory);
+    }
+
+    [HttpGet("all-inventory")]
+    public async Task<ActionResult<IEnumerable<AllWarehousesInventoryDTO>>> GetAllWarehousesInventory()
+    {
+        var allInventory = await _dbContext.Inventories
+            .Join(
+                _dbContext.Products,
+                inventory => inventory.ProductSku,
+                product => product.Sku,
+                (inventory, product) => new
+                {
+                    inventory.WarehouseId,
+                    product.ProductName,
+                    inventory.Quantity
+                }
+            )
+            .Join(
+                _dbContext.Warehouses,
+                inventoryProduct => inventoryProduct.WarehouseId,
+                warehouse => warehouse.Id,
+                (inventoryProduct, warehouse) => new AllWarehousesInventoryDTO
+                {
+                    WarehouseId = warehouse.Id,
+                    ProductName = inventoryProduct.ProductName,
+                    Quantity = inventoryProduct.Quantity
+                }
+            )
+            .ToListAsync();
+
+        if (allInventory == null || !allInventory.Any())
+        {
+            return NotFound("No inventory found for any warehouse");
+        }
+
+        return Ok(allInventory);
+    }
+
 
 }

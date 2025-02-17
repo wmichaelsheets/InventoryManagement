@@ -35,4 +35,27 @@ public class UserProfileController : ControllerBase
             })
             .ToList());
     }
+
+    [HttpGet("byEmail/{email}")]
+    [Authorize]
+    public IActionResult GetByEmail(string email)
+    {
+        var userProfile = _dbContext.UserProfiles
+            .FirstOrDefault(up => up.Email == email);
+
+        if (userProfile == null)
+        {
+            return NotFound($"User profile with email {email} not found.");
+        }
+
+        var userProfileDto = new UserProfileDTO
+        {
+            FirstName = userProfile.FirstName,
+            LastName = userProfile.LastName,
+            Username = userProfile.Username
+        };
+
+        return Ok(userProfileDto);
+    }
+
 }
