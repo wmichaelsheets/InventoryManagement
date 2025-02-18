@@ -49,6 +49,40 @@ public class ProductController : ControllerBase
         return Ok(productWithInventoryDTO);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProductWithInventoryAndUserDTO>>> GetAllProducts()
+    {
+        var products = await _dbContext.Products
+            .Include(p => p.Inventories)
+            .Include(p => p.UserProfile)
+            .Select(p => new ProductWithInventoryAndUserDTO
+            {
+                Sku = p.Sku,
+                ProductName = p.ProductName,
+                UnitPrice = p.UnitPrice,
+                Updated = p.Updated,
+                Notes = p.Notes,
+                UserId = p.UserProfileId,
+                UserFirstName = p.UserProfile.FirstName,
+                UserLastName = p.UserProfile.LastName,
+                UserEmail = p.UserProfile.Email,
+                Inventories = p.Inventories.Select(i => new InventoryDTO
+                {
+                    WarehouseId = i.WarehouseId,
+                    ProductSku = i.ProductSku,
+                    Quantity = i.Quantity
+                }).ToList()
+            })
+            .ToListAsync();
+
+        if (!products.Any())
+        {
+            return NotFound("No products found.");
+        }
+
+        return Ok(products);
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProductDTO>> CreateProduct([FromBody] CreateProductDTO createProductDTO)
     {
@@ -139,6 +173,44 @@ public class ProductController : ControllerBase
         };
 
         return Ok(productDTO);
+    }
+
+    [HttpDelete("{sku}")]
+    public async Task<IActionResult> DeleteProduct(string sku)
+    {
+        using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+        try
+        {
+            var product = await _dbContext.Products
+                .FirstOrDefaultAsync(p => p.Sku == sku);
+
+            if (product == null)
+            {
+                return NotFound($"Product with SKU {sku} not found.");
+            }
+
+            // Delete related inventory records
+            var relatedInventories = await _dbContext.Inventories
+                .Where(i => i.ProductSku == sku)
+                .ToListAsync();
+
+            _dbContext.Inventories.RemoveRange(relatedInventories);
+
+            // Delete the product
+            _dbContext.Products.Remove(product);
+
+            await _dbContext.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            return StatusCode(500, "An error occurred while deleting the product and its inventory records.");
+        }
     }
 
 
