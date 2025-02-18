@@ -3,7 +3,7 @@ import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Home from "./Home";
-//import Inventory from "./Inventory";
+import ProductDetail from "./Product/ProductDetail";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -17,14 +17,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             </AuthorizedRoute>
           }
         />
-        {/* <Route
-          path="inventory"
+        <Route
+          path="productdetail"
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <Inventory />
+              <ProductDetail />
             </AuthorizedRoute>
           }
-        /> */}
+        />
         <Route
           path="login"
           element={<Login setLoggedInUser={setLoggedInUser} />}
