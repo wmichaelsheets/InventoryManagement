@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
 import { getAllProducts, getProductByName, deleteProductBySku, putProductBySku } from '../../managers/productManager';
 
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productDetails, setProductDetails] = useState(null);
@@ -39,9 +41,9 @@ const ProductDetail = () => {
   };
 
   const handleAddNewProduct = () => {
-    // Implement navigation to Add New Product view
-    console.log('Navigate to Add New Product view');
+    navigate('/products/add'); // Adjust this path as needed
   };
+
 
   const handleDeleteProduct = async () => {
     if (selectedProduct && productDetails) {

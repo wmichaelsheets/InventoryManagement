@@ -4,6 +4,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Home from "./Home";
 import ProductDetail from "./Product/ProductDetail";
+import AddProductView from "./Product/AddProductView";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -22,6 +23,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <ProductDetail />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="products/add"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AddProductView />
             </AuthorizedRoute>
           }
         />

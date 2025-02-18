@@ -27,23 +27,23 @@ export const getProductByName = async (productName) => {
   }
 };
 
-export const postProduct = async (createProductDTO) => {
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(createProductDTO),
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error creating product:', error);
-    throw error;
+export const postProduct = async (product) => {
+  const response = await fetch("/api/product", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+  });
+  
+  const responseData = await response.json();
+  
+  if (!response.ok) {
+    console.error('Server response:', responseData);
+    throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(responseData)}`);
   }
+  
+  return responseData;
 };
 
 export const putProductBySku = async (sku, updateProductDTO) => {
