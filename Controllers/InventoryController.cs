@@ -4,6 +4,10 @@ using InventoryManagement.Data;
 using InventoryManagement.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagement.Models;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace InventoryManagement.Controllers;
 
@@ -12,31 +16,35 @@ namespace InventoryManagement.Controllers;
 public class InventoryController : ControllerBase
 {
     private InventoryManagementDbContext _dbContext;
+    private readonly ILogger<InventoryController> _logger;
 
-    public InventoryController(InventoryManagementDbContext context)
+
+    public InventoryController(InventoryManagementDbContext context, ILogger<InventoryController> logger)
     {
         _dbContext = context;
+        _logger = logger;
     }
-
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InventoryItemDTO>>> GetAllInventoryItems()
+    public async Task<ActionResult<IEnumerable<WarehouseInventoryValueDTO>>> GetAllInventoryAllWarehouses()
     {
         var inventoryItems = await _dbContext.Inventories
             .Include(i => i.Product)
             .Include(i => i.Warehouse)
-            .Select(i => new InventoryItemDTO
+            .GroupBy(i => i.WarehouseId)
+            .Select(g => new WarehouseInventoryValueDTO
             {
-                WarehouseId = i.WarehouseId,
-                WarehouseName = i.Warehouse.Name,
-                WarehouseLocation = i.Warehouse.Location,
-                WarehouseNotes = i.Warehouse.Notes,
-                ProductSku = i.ProductSku,
-                ProductName = i.Product.ProductName,
-                UnitPrice = i.Product.UnitPrice,
-                UserId = i.Product.UserProfileId,
-                ProductNotes = i.Product.Notes,
-                Quantity = i.Quantity,
-                ProductUpdated = i.Product.Updated
+                WarehouseId = g.Key,
+                WarehouseName = g.First().Warehouse.Name,
+                WarehouseLocation = g.First().Warehouse.Location,
+                TotalInventoryValue = g.Sum(i => i.Quantity * i.Product.UnitPrice),
+                InventoryItems = g.Select(i => new InventoryItemValueDTO
+                {
+                    ProductSku = i.ProductSku,
+                    ProductName = i.Product.ProductName,
+                    UnitPrice = i.Product.UnitPrice,
+                    Quantity = i.Quantity,
+                    TotalValue = i.Quantity * i.Product.UnitPrice
+                }).ToList()
             })
             .ToListAsync();
 
@@ -46,6 +54,47 @@ public class InventoryController : ControllerBase
         }
 
         return Ok(inventoryItems);
+    }
+
+    [HttpGet("warehouse/{warehouseId}")]
+    public async Task<ActionResult<WarehouseInventoryValueDTO>> GetInventoryForWarehouseId(int warehouseId)
+    {
+        var warehouse = await _dbContext.Warehouses.FindAsync(warehouseId);
+        if (warehouse == null)
+        {
+            return NotFound($"Warehouse with ID {warehouseId} not found.");
+        }
+
+        var inventoryItems = await _dbContext.Inventories
+            .Where(i => i.WarehouseId == warehouseId)
+            .Include(i => i.Product)
+            .Select(i => new InventoryItemValueDTO
+            {
+                ProductSku = i.ProductSku,
+                ProductName = i.Product.ProductName,
+                UnitPrice = i.Product.UnitPrice,
+                Quantity = i.Quantity,
+                TotalValue = i.Quantity * i.Product.UnitPrice
+            })
+            .ToListAsync();
+
+        if (!inventoryItems.Any())
+        {
+            return NotFound($"No inventory items found for warehouse with ID {warehouseId}.");
+        }
+
+        var totalInventoryValue = inventoryItems.Sum(i => i.TotalValue);
+
+        var warehouseInventory = new WarehouseInventoryValueDTO
+        {
+            WarehouseId = warehouseId,
+            WarehouseName = warehouse.Name,
+            WarehouseLocation = warehouse.Location,
+            TotalInventoryValue = totalInventoryValue,
+            InventoryItems = inventoryItems
+        };
+
+        return Ok(warehouseInventory);
     }
 
     [HttpPost]

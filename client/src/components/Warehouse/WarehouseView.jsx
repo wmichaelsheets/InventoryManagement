@@ -81,40 +81,40 @@ const WarehouseView = () => {
       </Dropdown>
 
       <Table striped>
-      <thead>
-        <tr>
-          <th>Product Name</th>
-          <th>Quantity</th>
-          {selectedWarehouse === 'all' && <th>Warehouse</th>}
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {inventory.map((item, index) => (
-          <tr key={index}>
-            <td>{item.productName || 'N/A'}</td>
-            <td>{item.quantity || 0}</td>
-            {selectedWarehouse === 'all' && <td>{item.warehouseId || 'N/A'}</td>}
-            <td>
-              <Button 
-                color="primary" 
-                size="sm" 
-                onClick={() => handleEdit(item)}
-                disabled={!item.productSku || !item.warehouseId}
-              >
-                Edit
-              </Button>
-            </td>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            {selectedWarehouse === 'all' && <th>Warehouse</th>}
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {inventory.map((item, index) => (
+            <tr key={index}>
+              <td>{item.productName || 'N/A'}</td>
+              <td>{item.quantity || 0}</td>
+              {selectedWarehouse === 'all' && <td>{item.warehouseId || 'N/A'}</td>}
+              <td>
+                <Button 
+                  color="primary" 
+                  size="sm" 
+                  onClick={() => handleEdit(item)}
+                  disabled={!item.productSku || !item.warehouseId}
+                >
+                  Edit
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
 
-        <div className="text-center mt-4">
-      <Button color="success" onClick={handleAddInventoryItem}>Add Inventory Item</Button>
+      <div className="text-center mt-4">
+        <Button color="success" onClick={handleAddInventoryItem}>Add Inventory Item</Button>
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default WarehouseView;
