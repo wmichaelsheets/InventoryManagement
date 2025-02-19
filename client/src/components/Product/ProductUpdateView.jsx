@@ -1,28 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { putProductBySku, getProductByName } from '../managers/productManager';
+import { putProductBySku, getProductByName } from '../../managers/productManager';
+import { getAllUsers } from '../../managers/userManager';
 
 export default function ProductUpdateView({ productName, onClose }) {
   const [product, setProduct] = useState({
     sku: '',
     productName: '',
     unitPrice: 0,
-    userId: 0,
+    userId: 1,
     notes: ''
   });
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    getProductByName(productName).then(setProduct);
+    const fetchProductAndUsers = async () => {
+      try {
+        const productData = await getProductByName(productName);
+        setProduct(prevProduct => ({
+          ...prevProduct,
+          ...productData,
+          userId: productData.userId || 1
+        }));
+        const usersData = await getAllUsers();
+        console.log('Fetched users:', usersData);
+        setUsers(usersData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchProductAndUsers();
   }, [productName]);
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setProduct(prev => ({ ...prev, [name]: value }));
+    setProduct(prev => ({ 
+      ...prev, 
+      [name]: name === 'userId' ? parseInt(value, 10) : 
+              name === 'unitPrice' ? parseFloat(value) : value 
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log('Submitting product update:', product);
       await putProductBySku(product.sku, product);
       alert('Product updated successfully!');
       onClose();
@@ -47,9 +70,29 @@ export default function ProductUpdateView({ productName, onClose }) {
         <Input type="number" name="unitPrice" id="unitPrice" value={product.unitPrice} onChange={handleInputChange} />
       </FormGroup>
       <FormGroup>
-        <Label for="userId">User ID</Label>
-        <Input type="number" name="userId" id="userId" value={product.userId} onChange={handleInputChange} readOnly />
-      </FormGroup>
+  <Label for="userId">Assigned User</Label>
+  {users.length > 0 ? (
+    <>
+      <Input 
+        type="select" 
+        name="userId" 
+        id="userId" 
+        value={product.userId || ''} 
+        onChange={handleInputChange}
+      >
+        <option value="">Select a user</option>
+        {users.map(user => (
+          <option key={user.id} value={user.id}>
+            {`${user.firstName} ${user.lastName} (${user.username})`}
+          </option>
+        ))}
+      </Input>
+      <small>Current userId: {product.userId}</small>
+    </>
+  ) : (
+    <p>Loading users...</p>
+  )}
+</FormGroup>
       <FormGroup>
         <Label for="notes">Notes</Label>
         <Input type="textarea" name="notes" id="notes" value={product.notes} onChange={handleInputChange} />

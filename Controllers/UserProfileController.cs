@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InventoryManagement.Data;
+using InventoryManagement.Models;
 using InventoryManagement.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ namespace InventoryManagement.Controllers;
 [Route("api/[controller]")]
 public class UserProfileController : ControllerBase
 {
-    private InventoryManagementDbContext _dbContext;
+    private readonly InventoryManagementDbContext _dbContext;
 
     public UserProfileController(InventoryManagementDbContext context)
     {
@@ -19,10 +20,9 @@ public class UserProfileController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public IActionResult Get()
+    public async Task<ActionResult<IEnumerable<UserProfileDTO>>> GetAllUsers()
     {
-        return Ok(_dbContext
-            .UserProfiles
+        var users = await _dbContext.UserProfiles
             .Include(up => up.IdentityUser)
             .Select(up => new UserProfileDTO
             {
@@ -33,15 +33,23 @@ public class UserProfileController : ControllerBase
                 Email = up.IdentityUser.Email,
                 Username = up.IdentityUser.UserName
             })
-            .ToList());
+            .ToListAsync();
+
+        if (users == null || !users.Any())
+        {
+            return NotFound("No users found.");
+        }
+
+        return Ok(users);
     }
 
     [HttpGet("byEmail/{email}")]
     [Authorize]
-    public IActionResult GetByEmail(string email)
+    public async Task<ActionResult<UserProfileDTO>> GetByEmail(string email)
     {
-        var userProfile = _dbContext.UserProfiles
-            .FirstOrDefault(up => up.Email == email);
+        var userProfile = await _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .FirstOrDefaultAsync(up => up.Email == email);
 
         if (userProfile == null)
         {
@@ -50,12 +58,14 @@ public class UserProfileController : ControllerBase
 
         var userProfileDto = new UserProfileDTO
         {
+            Id = userProfile.Id,
             FirstName = userProfile.FirstName,
             LastName = userProfile.LastName,
-            Username = userProfile.Username
+            IdentityUserId = userProfile.IdentityUserId,
+            Email = userProfile.IdentityUser.Email,
+            Username = userProfile.IdentityUser.UserName
         };
 
         return Ok(userProfileDto);
     }
-
 }

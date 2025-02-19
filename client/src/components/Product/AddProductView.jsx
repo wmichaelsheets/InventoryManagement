@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { postProduct } from '../../managers/productManager';
+import { getAllUsers } from '../../managers/userManager'; 
 
 const AddProductView = () => {
     const [product, setProduct] = useState({
@@ -9,15 +10,29 @@ const AddProductView = () => {
       productName: '',
       unitPrice: '',
       notes: '',
-      userId: 1 // Default user ID, you might want to get this dynamically
+      userId: 1 
     });
+    const [users, setUsers] = useState([]);
     const navigate = useNavigate();
   
+    useEffect(() => {
+      const fetchUsers = async () => {
+        try {
+          const fetchedUsers = await getAllUsers();
+          setUsers(fetchedUsers);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+      };
+      fetchUsers();
+    }, []);
+
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       setProduct(prevProduct => ({
         ...prevProduct,
-        [name]: name === 'unitPrice' ? parseFloat(value) : value
+        [name]: name === 'unitPrice' ? parseFloat(value) : 
+                name === 'userId' ? parseInt(value, 10) : value
       }));
     };
   
@@ -27,7 +42,7 @@ const AddProductView = () => {
         const newProduct = {
           ...product,
           unitPrice: parseFloat(product.unitPrice),
-          notes: product.notes || '' // Ensure notes is always a string, even if empty
+          notes: product.notes || '' 
         };
         console.log('Attempting to add product:', newProduct);
         const addedProduct = await postProduct(newProduct);
@@ -92,6 +107,23 @@ const AddProductView = () => {
             value={product.notes}
             onChange={handleInputChange}
           />
+        </FormGroup>
+        <FormGroup>
+          <Label for="userId">Assigned User</Label>
+          <Input
+            type="select"
+            name="userId"
+            id="userId"
+            value={product.userId}
+            onChange={handleInputChange}
+            required
+          >
+            {users.map(user => (
+              <option key={user.id} value={user.id}>
+                {`${user.firstName} ${user.lastName} (${user.username})`}
+              </option>
+            ))}
+          </Input>
         </FormGroup>
         <Button color="primary" type="submit">Add Product</Button>
       </Form>
