@@ -23,6 +23,14 @@ export const getAllInventoryAllWarehouses = async () => {
   }
 };
 
+export const getWarehouseValues = async () => {
+  const response = await fetch("/api/warehouse/values");
+  if (!response.ok) {
+    throw new Error("Failed to fetch warehouse values");
+  }
+  return await response.json();
+}; 
+
 export const getInventoryForWarehouseId = async (warehouseId) => {
   try {
     const response = await fetch(`${apiUrl}/${warehouseId}/inventory`, {
@@ -44,4 +52,5 @@ export const getInventoryForWarehouseId = async (warehouseId) => {
     console.error(`Error fetching inventory for warehouse ${warehouseId}:`, error);
     throw error;
   }
+
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllInventoryAllWarehouses, getInventoryForWarehouseId } from '../../managers/warehouseManager';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Table, Button } from 'reactstrap';
+import { getAllInventoryAllWarehouses, getInventoryForWarehouseId, getWarehouseValues } from '../../managers/warehouseManager';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Table, Button, Card, CardBody, CardTitle } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
 const WarehouseView = () => {
@@ -8,6 +8,7 @@ const WarehouseView = () => {
   const [inventory, setInventory] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
+  const [warehouseValues, setWarehouseValues] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const WarehouseView = () => {
       { id: 2, name: 'Warehouse 2' },
       { id: 3, name: 'Warehouse 3' },
     ]);
+    fetchWarehouseValues();
   }, []);
 
   useEffect(() => {
@@ -34,6 +36,15 @@ const WarehouseView = () => {
       setInventory(data);
     } catch (error) {
       console.error('Error fetching inventory:', error);
+    }
+  };
+
+  const fetchWarehouseValues = async () => {
+    try {
+      const values = await getWarehouseValues();
+      setWarehouseValues(values);
+    } catch (error) {
+      console.error('Error fetching warehouse values:', error);
     }
   };
 
@@ -66,6 +77,17 @@ const WarehouseView = () => {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Warehouse Inventory</h2>
       
+      <Card className="mb-4">
+        <CardBody>
+          <CardTitle tag="h5">Total Value by Warehouse</CardTitle>
+          {Object.entries(warehouseValues).map(([warehouseId, value]) => (
+            <div key={warehouseId}>
+              Warehouse {warehouseId}: ${value.toFixed(2)}
+            </div>
+          ))}
+        </CardBody>
+      </Card>
+
       <Dropdown isOpen={dropdownOpen} toggle={toggle} className="mb-4 d-flex justify-content-center">
         <DropdownToggle caret>
           {selectedWarehouse === 'all' ? 'All Warehouses' : `Warehouse ${selectedWarehouse}`}

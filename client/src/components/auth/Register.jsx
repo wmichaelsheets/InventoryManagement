@@ -19,7 +19,7 @@ export default function Register({ setLoggedInUser }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (password !== confirmPassword) {
       setPasswordMismatch(true);
     } else {
@@ -31,14 +31,19 @@ export default function Register({ setLoggedInUser }) {
         address,
         password,
       };
-      register(newUser).then((user) => {
-        if (user) {
-          setLoggedInUser(user);
-          navigate("/");
-        } else {
+      register(newUser)
+        .then((user) => {
+          if (user) {
+            setLoggedInUser(user);
+            navigate("/");
+          } else {
+            setRegistrationFailure(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Registration error:", error);
           setRegistrationFailure(true);
-        }
-      });
+        });
     }
   };
 

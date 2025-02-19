@@ -82,5 +82,19 @@ public class WarehouseController : ControllerBase
         return Ok(allInventory);
     }
 
+    [HttpGet("values")]
+    public async Task<IActionResult> GetWarehouseValues()
+    {
+        var warehouseValues = await _dbContext.Inventories
+            .Join(_dbContext.Products,
+                i => i.ProductSku,
+                p => p.Sku,
+                (i, p) => new { i.WarehouseId, Value = i.Quantity * p.UnitPrice })
+            .GroupBy(x => x.WarehouseId)
+            .Select(g => new { WarehouseId = g.Key, TotalValue = g.Sum(x => x.Value) })
+            .ToDictionaryAsync(x => x.WarehouseId, x => x.TotalValue);
+
+        return Ok(warehouseValues);
+    }
 
 }

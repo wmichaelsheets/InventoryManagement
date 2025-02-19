@@ -43,11 +43,16 @@ export const tryGetLoggedInUser = () => {
 export const register = (userProfile) => {
   userProfile.password = btoa(userProfile.password);
   return fetch(_apiUrl + "/register", {
-    credentials: "include", // This ensures cookies are sent with the request
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userProfile),
-  }).then(() => tryGetLoggedInUser());
+  }).then((res) => {
+    if (res.ok) {
+      return login(userProfile.email, atob(userProfile.password));
+    } else {
+      return Promise.reject("Registration failed");
+    }
+  });
 };
