@@ -29,7 +29,9 @@ public class WarehouseController : ControllerBase
                 (inventory, product) => new WarehouseInventoryDTO
                 {
                     ProductName = product.ProductName,
-                    Quantity = inventory.Quantity
+                    ProductSku = product.Sku,
+                    Quantity = inventory.Quantity,
+                    WarehouseId = inventory.WarehouseId
                 }
             )
             .ToListAsync();
@@ -54,6 +56,7 @@ public class WarehouseController : ControllerBase
                 {
                     inventory.WarehouseId,
                     product.ProductName,
+                    product.Sku,
                     inventory.Quantity
                 }
             )
@@ -65,6 +68,7 @@ public class WarehouseController : ControllerBase
                 {
                     WarehouseId = warehouse.Id,
                     ProductName = inventoryProduct.ProductName,
+                    ProductSku = inventoryProduct.Sku,
                     Quantity = inventoryProduct.Quantity
                 }
             )

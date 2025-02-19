@@ -5,6 +5,9 @@ import Register from "./auth/Register";
 import Home from "./Home";
 import ProductDetail from "./Product/ProductDetail";
 import AddProductView from "./Product/AddProductView";
+import WarehouseView from "./Warehouse/WarehouseView";
+import AddInventoryView from "./Inventory/AddInventoryView";
+import UpdateInventoryView from "./Inventory/UpdateInventoryView";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -31,6 +34,30 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <AddProductView />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="warehouse"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <WarehouseView />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="inventory/add"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AddInventoryView />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="inventory/update/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <UpdateInventoryView />
             </AuthorizedRoute>
           }
         />
