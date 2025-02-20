@@ -4,6 +4,7 @@ using InventoryManagement.Data;
 using InventoryManagement.Models;
 using InventoryManagement.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InventoryManagement.Controllers;
 
@@ -68,4 +69,68 @@ public class UserProfileController : ControllerBase
 
         return Ok(userProfileDto);
     }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateUserProfile(int id, UpdateUserProfileDTO updateDto)
+    {
+        var userProfile = await _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .FirstOrDefaultAsync(up => up.Id == id);
+
+        if (userProfile == null)
+        {
+            return NotFound($"User profile with id {id} not found.");
+        }
+
+
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userProfile.IdentityUserId != currentUserId)
+        {
+            return Forbid();
+        }
+
+
+        userProfile.FirstName = updateDto.FirstName;
+        userProfile.LastName = updateDto.LastName;
+        userProfile.IdentityUser.Email = updateDto.Email;
+
+
+        userProfile.Email = updateDto.Email;
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!UserProfileExists(id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+
+        var updatedUserProfileDto = new UserProfileDTO
+        {
+            Id = userProfile.Id,
+            FirstName = userProfile.FirstName,
+            LastName = userProfile.LastName,
+            IdentityUserId = userProfile.IdentityUserId,
+            Email = userProfile.IdentityUser.Email,
+            Username = userProfile.IdentityUser.UserName
+        };
+
+        return Ok(updatedUserProfileDto);
+    }
+
+    private bool UserProfileExists(int id)
+    {
+        return _dbContext.UserProfiles.Any(e => e.Id == id);
+    }
+
 }

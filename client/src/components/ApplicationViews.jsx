@@ -9,6 +9,7 @@ import WarehouseView from "./Warehouse/WarehouseView";
 import AddInventoryView from "./Inventory/AddInventoryView";
 import UpdateInventoryView from "./Inventory/UpdateInventoryView";
 import AssignUserProduct from "./Product/AssignUserProduct";
+import UserView from './User/UserView';
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -70,6 +71,13 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           </AuthorizedRoute>
           } 
         />
+
+      <Route 
+        path="/profile" 
+        element={
+        <UserView loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} />
+        } 
+      />
 
         <Route
           path="login"
