@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InventoryManagement.Data;
-using InventoryManagement.Models;
 using InventoryManagement.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

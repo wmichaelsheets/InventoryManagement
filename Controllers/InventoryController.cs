@@ -1,13 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InventoryManagement.Data;
 using InventoryManagement.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagement.Models;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace InventoryManagement.Controllers;
 
@@ -105,27 +100,27 @@ public class InventoryController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        // Check if the product exists
+
         var product = await _dbContext.Products.FindAsync(addInventoryItemDTO.ProductSku);
         if (product == null)
         {
             return NotFound($"Product with SKU {addInventoryItemDTO.ProductSku} not found.");
         }
 
-        // Check if the warehouse exists
+
         var warehouse = await _dbContext.Warehouses.FindAsync(addInventoryItemDTO.WarehouseId);
         if (warehouse == null)
         {
             return NotFound($"Warehouse with ID {addInventoryItemDTO.WarehouseId} not found.");
         }
 
-        // Check if the inventory item already exists
+
         var inventoryItem = await _dbContext.Inventories
             .FirstOrDefaultAsync(i => i.WarehouseId == addInventoryItemDTO.WarehouseId && i.ProductSku == addInventoryItemDTO.ProductSku);
 
         if (inventoryItem == null)
         {
-            // Create new inventory item
+
             inventoryItem = new Inventory
             {
                 WarehouseId = addInventoryItemDTO.WarehouseId,
@@ -136,7 +131,7 @@ public class InventoryController : ControllerBase
         }
         else
         {
-            // Update existing inventory item
+
             inventoryItem.Quantity = addInventoryItemDTO.Quantity;
         }
 

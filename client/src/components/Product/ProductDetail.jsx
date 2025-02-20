@@ -41,13 +41,13 @@ const ProductDetail = () => {
   };
 
   const handleAddNewProduct = () => {
-    navigate('/products/add'); // Adjust this path as needed
+    navigate('/products/add'); 
   };
 
 
   const handleDeleteProduct = async () => {
     if (selectedProduct && productDetails) {
-      // Add confirmation dialog
+      
       const isConfirmed = window.confirm(`Are you sure you want to delete the product "${productDetails.productName}"?`);
       
       if (isConfirmed) {
@@ -55,7 +55,7 @@ const ProductDetail = () => {
           await deleteProductBySku(productDetails.sku);
           setSelectedProduct(null);
           setProductDetails(null);
-          // Refresh the product list
+          
           const updatedProducts = await getAllProducts();
           setProducts(updatedProducts);
         } catch (error) {
@@ -80,7 +80,7 @@ const ProductDetail = () => {
       await putProductBySku(updatedProduct.sku, updatedProduct);
       setProductDetails(updatedProduct);
       setIsUpdating(false);
-      // Refresh the product list
+      
       const updatedProducts = await getAllProducts();
       setProducts(updatedProducts);
     } catch (error) {

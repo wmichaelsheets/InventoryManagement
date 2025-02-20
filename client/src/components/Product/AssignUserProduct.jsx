@@ -3,7 +3,7 @@ import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { getAllProducts } from '../../managers/productManager';
 import { getAllUsers } from '../../managers/userManager';
 import { putProductBySku } from '../../managers/productManager';
-//import { putUserProduct } from '../../managers/productManager';
+
 
 export default function AssignUserProduct() {
   const [products, setProducts] = useState([]);

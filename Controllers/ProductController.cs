@@ -190,14 +190,14 @@ public class ProductController : ControllerBase
                 return NotFound($"Product with SKU {sku} not found.");
             }
 
-            // Delete related inventory records
+
             var relatedInventories = await _dbContext.Inventories
                 .Where(i => i.ProductSku == sku)
                 .ToListAsync();
 
             _dbContext.Inventories.RemoveRange(relatedInventories);
 
-            // Delete the product
+
             _dbContext.Products.Remove(product);
 
             await _dbContext.SaveChangesAsync();
