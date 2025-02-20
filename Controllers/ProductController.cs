@@ -213,5 +213,34 @@ public class ProductController : ControllerBase
         }
     }
 
+    [HttpPatch("{sku}/assign-user")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> AssignUserToProduct(string sku, [FromBody] AssignUserDTO assignUserDTO)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var product = await _dbContext.Products.FindAsync(sku);
+        if (product == null)
+        {
+            return NotFound($"Product with SKU {sku} not found.");
+        }
+
+        var user = await _dbContext.UserProfiles.FindAsync(assignUserDTO.UserId);
+        if (user == null)
+        {
+            return NotFound($"User with ID {assignUserDTO.UserId} not found.");
+        }
+
+        product.UserProfileId = assignUserDTO.UserId;
+        product.Updated = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { Message = $"Product {sku} has been assigned to user {assignUserDTO.UserId}." });
+    }
+
 
 }

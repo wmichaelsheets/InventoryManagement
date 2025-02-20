@@ -17,6 +17,8 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
 
   const toggleNavbar = () => setOpen(!open);
 
+  const isAdmin = loggedInUser?.roles?.includes("Admin");
+
   return (
     <div>
       <Navbar color="light" light fixed="true" expand="lg">
@@ -38,6 +40,13 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                     <Button color="secondary" className="me-2">Warehouse</Button>
                   </NavLink>
                 </NavItem>
+                {isAdmin && (
+                  <NavItem>
+                    <NavLink tag={RRNavLink} to="/assign-user-product">
+                      <Button color="secondary" className="me-2">Assign User to Product</Button>
+                    </NavLink>
+                  </NavItem>
+                )}
               </Nav>
             </Collapse>
             <Button

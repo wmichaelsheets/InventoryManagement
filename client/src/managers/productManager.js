@@ -78,3 +78,25 @@ export const deleteProductBySku = async (sku) => {
     throw error;
   }
 };
+
+export const patchUserProduct = async (sku, userId) => {
+  try {
+    const response = await fetch(`${apiUrl}/${encodeURIComponent(sku)}/assign-user`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error assigning user to product with SKU ${sku}:`, error);
+    throw error;
+  }
+};
