@@ -1,6 +1,7 @@
 const apiUrl = "/api/product";
 
 
+
 export const getAllProducts = async () => {
   try {
     const response = await fetch(apiUrl);
@@ -79,10 +80,10 @@ export const deleteProductBySku = async (sku) => {
   }
 };
 
-export const patchUserProduct = async (sku, userId) => {
+export const putUserProduct = async (sku, userId) => {
   try {
     const response = await fetch(`${apiUrl}/${encodeURIComponent(sku)}/assign-user`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

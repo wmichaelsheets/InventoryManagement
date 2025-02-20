@@ -213,7 +213,7 @@ public class ProductController : ControllerBase
         }
     }
 
-    [HttpPatch("{sku}/assign-user")]
+    [HttpPut("{sku}/assign-user")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> AssignUserToProduct(string sku, [FromBody] AssignUserDTO assignUserDTO)
     {

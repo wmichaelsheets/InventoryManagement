@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { getAllProducts } from '../../managers/productManager';
 import { getAllUsers } from '../../managers/userManager';
-import { patchUserProduct } from '../../managers/productManager';
+import { putProductBySku } from '../../managers/productManager';
+//import { putUserProduct } from '../../managers/productManager';
 
 export default function AssignUserProduct() {
   const [products, setProducts] = useState([]);
@@ -34,11 +35,17 @@ export default function AssignUserProduct() {
       setMessage({ type: 'warning', text: 'Please select both a product and a user.' });
       return;
     }
-
+  
     try {
-      await patchUserProduct(selectedProduct, parseInt(selectedUser, 10));
+      const updateProductDTO = {
+        productName: products.find(p => p.sku === selectedProduct)?.productName,
+        unitPrice: products.find(p => p.sku === selectedProduct)?.unitPrice,
+        userId: parseInt(selectedUser, 10),
+        notes: products.find(p => p.sku === selectedProduct)?.notes
+      };
+  
+      await putProductBySku(selectedProduct, updateProductDTO);
       setMessage({ type: 'success', text: 'User successfully assigned to product!' });
-      // Reset selections
       setSelectedProduct('');
       setSelectedUser('');
     } catch (error) {

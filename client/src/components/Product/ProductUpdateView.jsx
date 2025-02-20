@@ -46,7 +46,7 @@ export default function ProductUpdateView({ productName, onClose }) {
     event.preventDefault();
     try {
       console.log('Submitting product update:', product);
-      await putProductBySku(product.sku, product);
+      await putProductBySku(sku, updateProductDTO);
       alert('Product updated successfully!');
       onClose();
     } catch (error) {

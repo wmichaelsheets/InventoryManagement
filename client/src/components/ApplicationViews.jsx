@@ -65,7 +65,9 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route 
           path="/assign-user-product" 
           element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
           <AssignUserProduct />
+          </AuthorizedRoute>
           } 
         />
 
