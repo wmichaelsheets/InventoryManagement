@@ -19,7 +19,12 @@ export default function Login({ setLoggedInUser }) {
         navigate("/");
       }
     });
+
+    const handleRegisterClick = () => {
+      console.log("Register link clicked");
+      navigate("/register");
   };
+};
 
   return (
     <div className="container" style={{ maxWidth: "500px" }}>

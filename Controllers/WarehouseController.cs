@@ -17,12 +17,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet("{warehouseId}/inventory")]
-    public async Task<ActionResult<IEnumerable<WarehouseInventoryDTO>>> GetWarehouseInventory(int warehouseId)
+    public async Task<ActionResult<IEnumerable<WarehouseInventoryDTO>>> GetWarehouseInventory(int warehouseId, [FromQuery] int userId)
     {
         var warehouseInventory = await _dbContext.Inventories
             .Where(i => i.WarehouseId == warehouseId)
             .Join(
-                _dbContext.Products,
+                _dbContext.Products.Where(p => p.UserProfileId == userId),
                 inventory => inventory.ProductSku,
                 product => product.Sku,
                 (inventory, product) => new WarehouseInventoryDTO
@@ -37,7 +37,7 @@ public class WarehouseController : ControllerBase
 
         if (warehouseInventory == null || !warehouseInventory.Any())
         {
-            return NotFound($"No inventory found for warehouse with ID {warehouseId}");
+            return NotFound($"No inventory found for warehouse with ID {warehouseId} and user ID {userId}");
         }
 
         return Ok(warehouseInventory);

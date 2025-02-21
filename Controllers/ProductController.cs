@@ -242,5 +242,39 @@ public class ProductController : ControllerBase
         return Ok(new { Message = $"Product {sku} has been assigned to user {assignUserDTO.UserId}." });
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<IEnumerable<ProductWithInventoryAndUserDTO>>> GetProductsByUserId(int userId)
+    {
+        var products = await _dbContext.Products
+            .Include(p => p.Inventories)
+            .Include(p => p.UserProfile)
+            .Where(p => p.UserProfileId == userId)
+            .Select(p => new ProductWithInventoryAndUserDTO
+            {
+                Sku = p.Sku,
+                ProductName = p.ProductName,
+                UnitPrice = p.UnitPrice,
+                Updated = p.Updated,
+                Notes = p.Notes,
+                UserId = p.UserProfileId,
+                UserFirstName = p.UserProfile.FirstName,
+                UserLastName = p.UserProfile.LastName,
+                UserEmail = p.UserProfile.Email,
+                Inventories = p.Inventories.Select(i => new InventoryDTO
+                {
+                    WarehouseId = i.WarehouseId,
+                    ProductSku = i.ProductSku,
+                    Quantity = i.Quantity
+                }).ToList()
+            })
+            .ToListAsync();
+
+        if (!products.Any())
+        {
+            return NotFound($"No products found for user with ID {userId}.");
+        }
+
+        return Ok(products);
+    }
 
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
-import { getAllProducts, getProductByName, deleteProductBySku, putProductBySku } from '../../managers/productManager';
+import { getProductsByUserId, getProductByName, deleteProductBySku, putProductBySku } from '../../managers/productManager';
 
-const ProductDetail = () => {
+const ProductDetail = ({ currentUser }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -13,15 +13,17 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const allProducts = await getAllProducts();
-        setProducts(allProducts);
-      } catch (error) {
-        console.error('Error fetching products:', error);
+      if (currentUser && currentUser.id) {
+        try {
+          const userProducts = await getProductsByUserId(currentUser.id);
+          setProducts(userProducts);
+        } catch (error) {
+          console.error('Error fetching user products:', error);
+        }
       }
     };
     fetchProducts();
-  }, []);
+  }, [currentUser]);
 
   const handleProductSelect = async (event) => {
     const productName = event.target.value;
@@ -44,10 +46,8 @@ const ProductDetail = () => {
     navigate('/products/add'); 
   };
 
-
   const handleDeleteProduct = async () => {
     if (selectedProduct && productDetails) {
-      
       const isConfirmed = window.confirm(`Are you sure you want to delete the product "${productDetails.productName}"?`);
       
       if (isConfirmed) {
@@ -56,7 +56,7 @@ const ProductDetail = () => {
           setSelectedProduct(null);
           setProductDetails(null);
           
-          const updatedProducts = await getAllProducts();
+          const updatedProducts = await getProductsByUserId(currentUser.id);
           setProducts(updatedProducts);
         } catch (error) {
           console.error('Error deleting product:', error);
@@ -81,7 +81,7 @@ const ProductDetail = () => {
       setProductDetails(updatedProduct);
       setIsUpdating(false);
       
-      const updatedProducts = await getAllProducts();
+      const updatedProducts = await getProductsByUserId(currentUser.id);
       setProducts(updatedProducts);
     } catch (error) {
       console.error('Error updating product:', error);

@@ -1,8 +1,8 @@
-const apiUrl = "/api/Warehouse"; 
+const apiUrl = "/api/Warehouse";
 
-export const getAllInventoryAllWarehouses = async () => {
+export const getAllInventoryAllWarehouses = async (userId) => {
   try {
-    const response = await fetch(`${apiUrl}/all-inventory`, {
+    const response = await fetch(`${apiUrl}/all-inventory?userId=${userId}`, {
       method: "GET",
       credentials: "include"
     });
@@ -23,17 +23,27 @@ export const getAllInventoryAllWarehouses = async () => {
   }
 };
 
-export const getWarehouseValues = async () => {
-  const response = await fetch("/api/warehouse/values");
-  if (!response.ok) {
-    throw new Error("Failed to fetch warehouse values");
-  }
-  return await response.json();
-}; 
-
-export const getInventoryForWarehouseId = async (warehouseId) => {
+export const getWarehouseValues = async (userId) => {
   try {
-    const response = await fetch(`${apiUrl}/${warehouseId}/inventory`, {
+    const response = await fetch(`${apiUrl}/values?userId=${userId}`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch warehouse values");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching warehouse values:", error);
+    throw error;
+  }
+};
+
+export const getInventoryForWarehouseId = async (warehouseId, userId) => {
+  try {
+    const response = await fetch(`${apiUrl}/${warehouseId}/inventory?userId=${userId}`, {
       method: "GET",
       credentials: "include"
     });
@@ -52,5 +62,4 @@ export const getInventoryForWarehouseId = async (warehouseId) => {
     console.error(`Error fetching inventory for warehouse ${warehouseId}:`, error);
     throw error;
   }
-
 };

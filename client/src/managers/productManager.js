@@ -101,3 +101,16 @@ export const putUserProduct = async (sku, userId) => {
     throw error;
   }
 };
+
+export const getProductsByUserId = async (userId) => {
+  try {
+    const response = await fetch(`${apiUrl}/user/${userId}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching products for user ${userId}:`, error);
+    throw error;
+  }
+};

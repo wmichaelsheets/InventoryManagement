@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllInventoryAllWarehouses, getInventoryForWarehouseId, getWarehouseValues } from '../../managers/warehouseManager';
+import { getCurrentUserId } from '../../managers/authManager';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Table, Button, Card, CardBody, CardTitle } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +10,18 @@ const WarehouseView = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
   const [warehouseValues, setWarehouseValues] = useState({});
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const currentUserId = getCurrentUserId();
+    if (!currentUserId) {
+      // Redirect to login page if user is not authenticated
+      navigate('/login');
+    } else {
+      setUserId(currentUserId);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     setWarehouses([
@@ -17,20 +29,23 @@ const WarehouseView = () => {
       { id: 2, name: 'Warehouse 2' },
       { id: 3, name: 'Warehouse 3' },
     ]);
-    fetchWarehouseValues();
   }, []);
 
   useEffect(() => {
-    fetchInventory();
-  }, [selectedWarehouse]);
+    if (userId) {
+      fetchInventory();
+      fetchWarehouseValues();
+    }
+  }, [selectedWarehouse, userId]);
 
   const fetchInventory = async () => {
+    if (!userId) return;
     try {
       let data;
       if (selectedWarehouse === 'all') {
-        data = await getAllInventoryAllWarehouses();
+        data = await getAllInventoryAllWarehouses(userId);
       } else {
-        data = await getInventoryForWarehouseId(selectedWarehouse);
+        data = await getInventoryForWarehouseId(selectedWarehouse, userId);
       }
       console.log('Fetched inventory data:', data);
       setInventory(data);
@@ -40,8 +55,9 @@ const WarehouseView = () => {
   };
 
   const fetchWarehouseValues = async () => {
+    if (!userId) return;
     try {
-      const values = await getWarehouseValues();
+      const values = await getWarehouseValues(userId);
       setWarehouseValues(values);
     } catch (error) {
       console.error('Error fetching warehouse values:', error);
@@ -103,34 +119,36 @@ const WarehouseView = () => {
       </Dropdown>
 
       <Table striped>
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            {selectedWarehouse === 'all' && <th>Warehouse</th>}
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inventory.map((item, index) => (
-            <tr key={index}>
-              <td>{item.productName || 'N/A'}</td>
-              <td>{item.quantity || 0}</td>
-              {selectedWarehouse === 'all' && <td>{item.warehouseId || 'N/A'}</td>}
-              <td>
-                <Button 
-                  color="primary" 
-                  size="sm" 
-                  onClick={() => handleEdit(item)}
-                  disabled={!item.productSku || !item.warehouseId}
-                >
-                  Edit
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+  <thead>
+    <tr>
+      <th>Product Name</th>
+      <th>Quantity</th>
+      {selectedWarehouse === 'all' && <th>Warehouse</th>}
+      {selectedWarehouse !== 'all' && <th>Actions</th>}
+    </tr>
+  </thead>
+  <tbody>
+    {inventory.map((item, index) => (
+      <tr key={index}>
+        <td>{item.productName || 'N/A'}</td>
+        <td>{item.quantity || 0}</td>
+        {selectedWarehouse === 'all' && <td>{item.warehouseId || 'N/A'}</td>}
+        {selectedWarehouse !== 'all' && (
+          <td>
+            <Button 
+              color="primary" 
+              size="sm" 
+              onClick={() => handleEdit(item)}
+              disabled={!item.productSku || !item.warehouseId}
+            >
+              Edit
+            </Button>
+          </td>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</Table>
 
       <div className="text-center mt-4">
         <Button color="success" onClick={handleAddInventoryItem}>Add Inventory Item</Button>
